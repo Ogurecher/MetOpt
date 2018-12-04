@@ -4,7 +4,7 @@ import pandas as pd
 from sklearn import metrics
 from sklearn import linear_model
 from sklearn.model_selection import train_test_split, cross_val_score
-from sklearn.preprocessing import  normalize
+from sklearn.preprocessing import  normalize, StandardScaler
 import matplotlib.pyplot as plt
 
 
@@ -21,7 +21,18 @@ def rmsleCalc(targets, predictions):
 
 
 dataframe = pd.read_csv('train.csv')
-dataframe = pd.get_dummies(dataframe)
+
+#getting dummies 
+numerical_features = ["LotFrontage", "LotArea", "OverallQual", "OverallQual", "OverallCond", 
+    "YearBuilt", "YearRemodAdd", "MasVnrArea", "BsmtFinSF1", "BsmtFinSF2", "BsmtUnfSF", 
+    "TotalBsmtSF", "1stFlrSF", "2ndFlrSF", "LowQualFinSF", "GrLivArea", "BsmtFullBath", 
+    "BsmtHalfBath", "FullBath", "HalfBath", "BedroomAbvGr", "KitchenAbvGr", "TotRmsAbvGrd", 
+    "Fireplaces", "GarageYrBlt", "GarageCars", "GarageArea", "WoodDeckSF", "OpenPorchSF", 
+    "EnclosedPorch", "3SsnPorch", "ScreenPorch", "PoolArea", "MiscVal", "MoSold", "YrSold"]
+categorical_features = list(set(dataframe.columns) - set(numerical_features))
+categorical_features.remove("Id")
+dataframe = pd.concat([dataframe[numerical_features+["Id", "SalePrice"]], pd.get_dummies(dataframe, columns=categorical_features, drop_first=True)], axis=1)
+#dataframe[numerical_features] = StandardScaler().fit_transform(dataframe[numerical_features])
 
 last_col = dataframe.pop('SalePrice')   #just rearranging columns for my convinience
 dataframe['SalePrice'] = last_col       #
@@ -32,7 +43,8 @@ features = np.nan_to_num(dataset[:, 0:len(dataset[0])-2])
 target = dataset[:, len(dataset[0])-1]
 
 # INSERT NORMALIZATION OR SCALING HERE IF SOMETHING IS WRONG
-#features = normalize(features)
+features = StandardScaler().fit_transform(features)
+#np.savetxt("norm.csv", features, delimiter=",")
 
 features_train, features_test, target_train, target_test = train_test_split(features, target, test_size=0.2)
 
