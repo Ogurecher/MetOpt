@@ -36,7 +36,7 @@ target = dataset[:, len(dataset[0])-1]
 
 features_train, features_test, target_train, target_test = train_test_split(features, target, test_size=0.2)
 
-model = linear_model.Lasso(alpha=250, normalize=True)
+model = linear_model.Lasso(alpha=500)
 model.fit(features_train, target_train)
 
 scores = cross_val_score(model, features_train, target_train, cv=5)
