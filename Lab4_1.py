@@ -4,7 +4,7 @@ import pandas as pd
 from sklearn import metrics
 from sklearn import linear_model
 from sklearn.model_selection import train_test_split, cross_val_score
-from sklearn.preprocessing import  normalize
+from sklearn.preprocessing import  normalize, StandardScaler
 import matplotlib.pyplot as plt
 
 
@@ -32,11 +32,11 @@ features = np.nan_to_num(dataset[:, 0:len(dataset[0])-2])
 target = dataset[:, len(dataset[0])-1]
 
 # INSERT NORMALIZATION OR SCALING HERE IF SOMETHING IS WRONG
-#features = normalize(features)
+features = StandardScaler().fit_transform(features)
 
 features_train, features_test, target_train, target_test = train_test_split(features, target, test_size=0.2)
 
-model = linear_model.Lasso(alpha=500)              #Normalization?
+model = linear_model.Lasso(alpha=10,normalize=True)              #Normalization?
 model.fit(features_train, target_train)
 
 scores = cross_val_score(model, features_train, target_train, cv=5)
