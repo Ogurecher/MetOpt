@@ -36,14 +36,12 @@ target = dataset[:, len(dataset[0])-1]
 
 features_train, features_test, target_train, target_test = train_test_split(features, target, test_size=0.2)
 
-model = linear_model.Lasso(alpha=500)
+model = linear_model.Lasso(alpha=500)              #Normalization?
 model.fit(features_train, target_train)
 
 scores = cross_val_score(model, features_train, target_train, cv=5)
+target_pred = model.predict(features_test)
 
-print("Accuracy: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
-
-print('RMSLE: %.2f' % rmsleCalc(target_test, model.predict(features_test)))
-
-print('Variance score: %.2f' % metrics.r2_score(target_test, model.predict(features_test)))
-
+print("Cross validation score: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
+print('RMSLE: %.2f' % rmsleCalc(target_test, target_pred))
+print('Variance score: %.2f' % metrics.r2_score(target_test, target_pred))
